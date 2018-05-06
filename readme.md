@@ -12,13 +12,15 @@ Tic Tac Toe Classes:
 * moves : returns a list of possible moves
 * display_board : shows the board, print statements galore
 * set_move(player_name, square) : calls player_name.move FIRST, then passes into this
-* check_win(player) : checks if a player has won
+* check_win(player) : checks if a player has won [link](https://stackoverflow.com/questions/1056316/algorithm-for-determining-tic-tac-toe-game-over?rq=1)
 * display_win_message(player) : tells if a player has won
 * start_over(boolean same_players?) : restart the game
 
 ## Player
 ### Variables
 * name : ? maybe not
+* moves : list of all of its moves
+*
 
 ### Methods
 * move(game) : prints possible moves with game.moves (maybe not), prompts user for a number corresponding to square they want to place move, returns that move to the caller
