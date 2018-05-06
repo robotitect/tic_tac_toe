@@ -13,13 +13,15 @@ Tic Tac Toe Classes:
 * display_board : shows the board, print statements galore
 * set_move(player_name, square) : calls player_name.move FIRST, then passes into this
 * check_win(player) : checks if a player has won [link](https://stackoverflow.com/questions/1056316/algorithm-for-determining-tic-tac-toe-game-over?rq=1)
+ * calls a method that returns all valid rows/columns/diagonals that contain the square just moved to, as arrays
+ * if one of them is all filled the same as the player's piece, they have won
 * display_win_message(player) : tells if a player has won
 * start_over(boolean same_players?) : restart the game
 
 ## Player
 ### Variables
 * name : ? maybe not
-* moves : list of all of its moves
+* moves_list : list of all of its moves
 *
 
 ### Methods
