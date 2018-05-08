@@ -1,0 +1,2 @@
+class CPUPlayer < Player
+end
