@@ -2,53 +2,123 @@ require "./Player.rb"
 require "./CPUPlayer.rb"
 
 class Game
-  def initialize(players) # (n)
-    @board = Array.new(3) { Array.new(3) } # Access (row, column) : [row][column]
+  attr_accessor :board
+
+  def initialize(players, n = 3)
+    @board = Array.new(n) { Array.new(n) } # Access (row, column) : [row][column]
+    @dim = 3
+    @squares_to_coords = {}
     x = 1
     @board.each_index do |row|
       @board[row].each_index do |col|
         @board[row][col] = x
+        @squares_to_coords[x] = [row, col]
         x += 1
       end
     end
+    print_board
 
     @players = []
-    @players.push(Player.new())
-    # @players[Player.new] = "X"
+    @players.push(Player.create_player_default)
     if(players == 1)
-      @players.push(CPUPlayer.new())
+      @players.push(CPUPlayer.create_cpu_player)
     else
-      @players.push(Player.new())
+      @players.push(Player.create_player_default)
     end
-    # @players[1] = "O"
-    # human_players.do { @players.push(Player.new) }
-    # cpu_players.do { @players.push(CPUPlayer.new) }
   end
 
   # Plays the game, asking each player for their move, displaying the board
   # between each move, and then checking for a win condition based on the
   # player's most recent move
   def play_game
-    loop do
-      players.each do |player|
-        # ask for a player's move,
+    catch :game_end do
+      while(moves)
+        @players.each do |player|
+          p moves
+          square_number = player.move(moves)
+          set_move(player, square_number)
+          print_board
+          # Checks if player just won with their last move
+          if(won?(player, square_number))
+            print_board
+            display_win_message(player)
+            throw :game_end
+          end
+        end
+      end
+      puts "Amazing, a tie game!"
+      throw :game_end
+    end
+
+    print "Do you want to play again? [y/n] "
+    answer = gets.chomp
+    if(answer[0] == "y" || answer[0] == "Y")
+      clear_board
+      print_board
+      play_game
+    else
+      puts "Bye!"
+    end
+  end
+
+  # Tells if the player won by looking at some square id'd by number
+  def won?(player, square_number)
+    get_containing(square_number).any? do |array|
+      array.all? do |element|
+        element.to_s.strip == player.piece
       end
     end
   end
 
+  def display_win_message(player)
+    puts "#{player.name} just won."
+  end
 
+  def clear_board
+    x = 1
+    board_iterate do |ele, row, col|
+      @board[row][col] = x
+      x += 1
+    end
+  end
+
+  # Calls the given player's move method, then modifies the playing board
   def set_move(player, square_number)
-    set = proc { |element| element = player.piece if element == square_number }
-    board_iterate(&set)
+    board_iterate do |element, row, col|
+      @board[row][col] = player.piece if element == square_number
+    end
   end
 
-  # iterates
-  def board_iterate(&given_proc)
-    @board.each_with_index do |row, index|
-      row.each_with_index do |element, index|
-        given_proc.call(element)
+  # Iterates over each element, capturing indices, takes block
+  def board_iterate # (&given_proc)
+    @board.each_with_index do |row, i|
+      row.each_with_index do |element, j|
+        # given_proc.call(element)
+        yield(element, i, j)
       end
     end
+  end
+
+  # Returns array with arrays representing elements in the row, column, and
+  # diagonals of the given square
+  def get_containing(square)
+    to_return = []
+    square_row, square_col = @squares_to_coords[square]
+    cont_row, cont_col, cont_diag1, cont_diag2 = [], [], [], []
+    board_iterate do |ele, i, j|
+      cont_row.push(ele) if i == square_row
+      cont_col.push(ele) if j == square_col
+      cont_diag1.push(ele) if i == j
+      cont_diag2.push(ele) if i + j == @dim - 1
+    end
+    # board_iterate { |ele, i, j| col.push(ele) if col == j }
+    # diag1 = []
+    # board_iterate { |ele, i, j| diag1.push(ele) if i == j }
+    # diag2 = []
+    # board_iterate { |ele, i, j| diag2.push(ele) if i + j == @dim - 1 }
+
+    to_return.push(cont_row, cont_col, cont_diag1, cont_diag2)
+    to_return
   end
 
   # Prints the current state of the playing board
@@ -57,7 +127,7 @@ class Game
     @board.each_with_index do |row, index|
       print "               "
       row.each_with_index do |element, index|
-        print " " + element.to_s + " "
+        print " " + element.to_s.center(3, " ") + " "
         if(index < row.length - 1)
           print "|"
         else
@@ -68,7 +138,7 @@ class Game
       if(index < @board.length - 1)
         print "               "
         row.each_with_index do |element, index|
-          print "---"
+          print "-----"
           if(index < row.length - 1)
             print "+"
           else
@@ -83,17 +153,18 @@ class Game
   # Returns all allowed moves from here on in
   def moves
     to_return = []
-    @board.each do |row|
-      row.each do |i|
-        if(i.is_a? Numeric)
-          to_return.push(i)
-        end
+    board_iterate do |i|
+      if(i.is_a? Numeric)
+        to_return.push(i)
       end
     end
-    to_return.inspect[1..-2]
+    to_return.empty? ? nil : to_return
+  end
+
+  def print_moves
+    puts "Available moves: " << moves.inspect[1..-2]
   end
 end
 
 game = Game.new(1)
-game.print_board
-puts game.moves
+game.play_game
