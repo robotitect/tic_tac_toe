@@ -111,17 +111,17 @@ class Game
       cont_diag1.push(ele) if i == j
       cont_diag2.push(ele) if i + j == @dim - 1
     end
-    # board_iterate { |ele, i, j| col.push(ele) if col == j }
-    # diag1 = []
-    # board_iterate { |ele, i, j| diag1.push(ele) if i == j }
-    # diag2 = []
-    # board_iterate { |ele, i, j| diag2.push(ele) if i + j == @dim - 1 }
-
     to_return.push(cont_row, cont_col, cont_diag1, cont_diag2)
     to_return
   end
 
-  # Prints the current state of the playing board
+  # Prints the current state of the playing board; looks like:
+  #   1  |  2  |  3
+  # -----+-----+-----
+  #   4  |  5  |  6
+  # -----+-----+-----
+  #   7  |  8  |  9
+  #
   def print_board
     puts
     @board.each_with_index do |row, index|
