@@ -1,5 +1,5 @@
-require "./Player.rb"
-require "./CPUPlayer.rb"
+require "./player.rb"
+require "./cpu_player.rb"
 
 class Game
   attr_accessor :board
@@ -16,7 +16,7 @@ class Game
         x += 1
       end
     end
-    print_board
+    # print_board
 
     @players = []
     @players.push(Player.create_player_default)
@@ -31,13 +31,14 @@ class Game
   # between each move, and then checking for a win condition based on the
   # player's most recent move
   def play_game
+    puts "Welcome to Tic Tac Toe (#{@dim} x #{@dim})!"
     catch :game_end do
       while(moves)
+        print_board
         @players.each do |player|
-          p moves
+          # p moves
           square_number = player.move(moves)
           set_move(player, square_number)
-          print_board
           # Checks if player just won with their last move
           if(won?(player, square_number))
             print_board
@@ -125,7 +126,7 @@ class Game
   def print_board
     puts
     @board.each_with_index do |row, index|
-      print "               "
+      print "          "
       row.each_with_index do |element, index|
         print " " + element.to_s.center(3, " ") + " "
         if(index < row.length - 1)
@@ -136,7 +137,7 @@ class Game
       end
 
       if(index < @board.length - 1)
-        print "               "
+        print "          "
         row.each_with_index do |element, index|
           print "-----"
           if(index < row.length - 1)
@@ -165,6 +166,3 @@ class Game
     puts "Available moves: " << moves.inspect[1..-2]
   end
 end
-
-game = Game.new(1)
-game.play_game
