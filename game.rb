@@ -6,7 +6,7 @@ class Game
 
   def initialize(players, n = 3)
     @board = Array.new(n) { Array.new(n) } # Access (row, column) : [row][column]
-    @dim = 3
+    @dim = n
     @squares_to_coords = {}
     x = 1
     @board.each_index do |row|
