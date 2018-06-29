@@ -1,8 +1,8 @@
-require "./player.rb"
-require "./cpu_player.rb"
+require_relative "player.rb"
+require_relative "cpu_player.rb"
 
 class Game
-  attr_accessor :board
+  attr_accessor :board, :players
 
   def initialize(players, n = 3)
     @board = Array.new(n) { Array.new(n) } # Access (row, column) : [row][column]
@@ -65,9 +65,7 @@ class Game
   # Tells if the player won by looking at some square id'd by number
   def won?(player, square_number)
     get_containing(square_number).any? do |array|
-      array.all? do |element|
-        element.to_s.strip == player.piece
-      end
+      array.all? { |element| element.to_s.strip == player.piece }
     end
   end
 

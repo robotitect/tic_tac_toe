@@ -9,7 +9,7 @@ class CPUPlayer < Player
   # Factory method for making a computer controlled player
   def self.create_cpu_player
     @@cpu_players += 1
-    CPUPlayer.new("CPU #{@@cpu_players}", @@available_pieces.pop)
+    CPUPlayer.new("CPU #{@@cpu_players}", @@available_pieces.last)
   end
 
   def move(moves)

@@ -37,7 +37,7 @@ class Player
   # Creates a default player, assigned the first piece of the remaining ones
   def self.create_player_default
     @@human_players += 1
-    Player.new("Human #{@@human_players}", @@available_pieces.shift)
+    Player.new("Human #{@@human_players}", @@available_pieces.first)
   end
 
   def to_s
